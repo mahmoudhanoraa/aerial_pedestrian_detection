@@ -1,13 +1,13 @@
 import tensorflow as tf
 from tensorflow.python.framework import graph_io
-from tensorflow.keras.models import load_model
+from keras_retinanet import models
 
 tf.keras.backend.clear_session()
 
 save_pb_dir = './model'
-model_fname = './model/model.h5'
+model_fname = './resnet50_csv_12_inference.h5'
 
-def freeze_graph(graph, session, output, save_pb_dir='.', save_pb_name='frozen_model.pb', save_pb_as_text=False):
+def freeze_graph(graph, session, output, save_pb_dir='.', save_pb_name='resnet50_csv_12_inference.pb', save_pb_as_text=False):
     with graph.as_default():
         graphdef_inf = tf.graph_util.remove_training_nodes(graph.as_graph_def())
         graphdef_frozen = tf.graph_util.convert_variables_to_constants(session, graphdef_inf, output)
@@ -17,7 +17,7 @@ def freeze_graph(graph, session, output, save_pb_dir='.', save_pb_name='frozen_m
 # This line must be executed before loading Keras model.
 tf.keras.backend.set_learning_phase(0)
 
-model = load_model(model_fname)
+model = models.load_model(model_fname, backbone_name='resnet50')
 
 session = tf.keras.backend.get_session()
 
@@ -44,4 +44,4 @@ trt_graph = trt.create_inference_graph(
 
 
 graph_io.write_graph(trt_graph, "./model/",
-                     "trt_graph.pb", as_text=False)
+                     "resnet50_csv_12_inference_TRT.pb", as_text=False)
