@@ -22,7 +22,7 @@ def get_session():
     return tf.Session(config=config)
 
 
-model_path = os.path.join('snapshots', 'version8_resplit_test_train', 'resnet50_csv_12_inference.h5')
+model_path = './resnet50_csv_12_inference.h5'
 
 # load retinanet model
 model = models.load_model(model_path, backbone_name='resnet50')
@@ -30,7 +30,7 @@ model = models.load_model(model_path, backbone_name='resnet50')
 
 labels_to_names = {0: 'Biker', 1: 'Car', 2: 'Bus', 3: 'Cart', 4: 'Skater', 5: 'Pedestrian'}
 
-sdd_images = os.listdir('/home/priya/Documents/stanford/cs230/keras-retinanet/examples/differents')
+sdd_images = os.listdir('./examples_UC3M')
 print(sdd_images)
 
 
@@ -71,12 +71,14 @@ def run_detection_image(filepath):
 
     file, ext = os.path.splitext(filepath)
     image_name = file.split('/')[-1] + ext
-    output_path = os.path.join('examples/results/', image_name)
-
+    output_path = '/home/jetsontx2/mahmoud/aerial_pedestrian_detection/output_UC3M/'+ image_name
+    print(output_path)
     draw_conv = cv2.cvtColor(draw, cv2.COLOR_BGR2RGB)
     cv2.imwrite(output_path, draw_conv)
 
-base_path = 'examples/differents//'
+base_path = './examples_UC3M'
 
 for image in sdd_images:
-    run_detection_image(os.path.join(base_path,image))
+    if 'jpg' in image:
+    	print(image)
+    	run_detection_image(os.path.join(base_path,image))
